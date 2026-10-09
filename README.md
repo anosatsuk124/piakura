@@ -19,7 +19,7 @@ piakura turns a song into piano arrangements you can play. It is a set of skills
 | System | Linux (x86_64, arm64) or macOS on Apple silicon. Windows is not supported; WSL2 is untested. |
 | Agent | [Codex CLI](https://learn.chatgpt.com/docs/cli), [Claude Code](https://code.claude.com/) or [OpenCode](https://opencode.ai/), and Node.js for `npx` |
 | Always | bash, python3 3.8+ |
-| While the repository is private | read access to `anosatsuk124/piakura`, and the [GitHub CLI](https://cli.github.com/) logged in (`gh auth login`) |
+| While the repository is private | read access to `anosatsuk124/piakura`, and the [GitHub CLI](https://cli.github.com/) logged in (`gh auth login`) and set up for Git (`gh auth setup-git`), so that `npx skills add` can clone it |
 | Audio or a link | [mise](https://mise.jdx.dev/), ffmpeg, and about 20 GB of disk for model environments. A GPU is optional: an NVIDIA GPU on this machine or on a Linux machine you can reach over SSH. |
 | Review export | ffmpeg and fluidsynth; for Japanese titles in videos, fontconfig with a Japanese font (for example Noto CJK). A GPU video encoder is optional (VA-API on Linux, VideoToolbox on macOS); without one, MP4 encodes on the CPU |
 

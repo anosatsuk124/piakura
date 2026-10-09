@@ -18,7 +18,7 @@ Windows is not supported; WSL2 behaves as Linux but is untested.
 - SSH worker: on the worker, Linux, key-based SSH with the host key already in `known_hosts`, Python 3.9+, mise, bubblewrap and the NVIDIA driver for CUDA. No sudo or system changes are made; everything stays in the worker directory. Check with `piakura doctor --ssh HOST --root DIR`.
 - Docker worker: Docker, the NVIDIA Container Toolkit for CUDA, and while the image is private `docker login ghcr.io` with read access. Membership in the `docker` group is root-equivalent.
 - Review: a browser. For FLAC/MP4 export, ffmpeg and fluidsynth on the machine running the review server; for Japanese titles in videos, a Japanese font (fontconfig with Noto CJK). MP4 encodes on the GPU when ffmpeg can there (VA-API on Linux, VideoToolbox on macOS; `piakura doctor --review` names the encoder), otherwise on the CPU.
-- Private releases: the GitHub CLI logged in (`gh auth login`) with access to the piakura repository.
+- Private releases: the GitHub CLI logged in (`gh auth login`) with access to the piakura repository, and set up for Git (`gh auth setup-git`) so that `npx skills add` can clone it.
 
 `piakura doctor` reports what is missing with an install command for this system.
 

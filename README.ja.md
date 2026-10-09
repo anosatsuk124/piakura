@@ -19,7 +19,7 @@ piakura は、曲を弾けるピアノ編曲にするためのツールです。
 | OS | Linux（x86_64、arm64）、または Apple silicon の macOS。Windows は対象外で、WSL2 は未検証です。 |
 | エージェント | [Codex CLI](https://learn.chatgpt.com/docs/cli)、[Claude Code](https://code.claude.com/)、[OpenCode](https://opencode.ai/) のどれか。`npx` のために Node.js |
 | 常に | bash、python3 3.8 以上 |
-| リポジトリが private の間 | `anosatsuk124/piakura` の閲覧権限と、ログイン済みの [GitHub CLI](https://cli.github.com/)（`gh auth login`） |
+| リポジトリが private の間 | `anosatsuk124/piakura` の閲覧権限と、ログイン済みの [GitHub CLI](https://cli.github.com/)（`gh auth login`）。`npx skills add` がリポジトリを取得できるよう、Git にも設定します（`gh auth setup-git`） |
 | 音源・URL から始める場合 | [mise](https://mise.jdx.dev/)、ffmpeg、モデルの環境に約 20 GB の空き容量。GPU は任意です。このマシンの NVIDIA GPU か、SSH で入れる Linux マシンの NVIDIA GPU を使えます。 |
 | レビューの書き出し | ffmpeg と fluidsynth。動画の日本語の見出しには、fontconfig と日本語フォント（Noto CJK など）。GPU の動画エンコーダー（Linux は VA-API、macOS は VideoToolbox）は任意で、ないときは MP4 を CPU でエンコードします |
 
