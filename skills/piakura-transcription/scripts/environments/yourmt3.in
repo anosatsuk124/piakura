@@ -1,0 +1,15 @@
+# Official Space API: transformers 4.45.1 fixes cache_position (#15).
+torch==2.5.1
+torchaudio==2.5.1
+numpy==1.26.4
+transformers==4.45.1
+pytorch-lightning==2.4.0
+torchmetrics==1.6.1
+librosa==0.10.2.post1
+einops==0.8.0
+deprecated==1.2.18
+mir-eval==0.8.2
+mido==1.3.3
+wandb==0.19.8
+soundfile==0.13.1
+smart-open==7.1.0

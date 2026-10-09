@@ -1,0 +1,5 @@
+audio-separator[cpu]==0.47.0
+torch==2.5.1
+torchvision==0.20.1
+numpy==2.2.6
+onnx-weekly==1.24.0.dev20261005

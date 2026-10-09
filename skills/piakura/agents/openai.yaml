@@ -1,0 +1,6 @@
+interface:
+  display_name: "piakura"
+  short_description: "MIDI or audio to Easy/Medium/Hard piano arrangements"
+  default_prompt: "Use $piakura to arrange a song for piano."
+policy:
+  allow_implicit_invocation: false

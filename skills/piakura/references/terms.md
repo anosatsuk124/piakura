@@ -1,0 +1,42 @@
+# Terms of use
+
+TERMS_VERSION: 2026-10-09
+
+Show the user the summary in their language (English and Japanese below; translate faithfully for others) and ask them to accept, read the full text, or decline. Record acceptance only after an explicit yes, with `piakura terms accept --version 2026-10-09`; the record goes to the user's own settings, not a project's. When this version changes, ask again.
+
+## Summary (English)
+
+- piakura is licensed under the Apache License 2.0 and comes with no warranty.
+- It bundles no machine-learning model weights. When you transcribe audio, the weights and Python packages are downloaded from their own publishers (Hugging Face, GitHub, PyPI, Google Drive) to this machine or to the SSH worker you choose. Each has its own license. Some forbid commercial use, one requires an access request, and some have conflicting or unverified license labels (table below). You are responsible for checking and following them.
+- You must have the rights to the music you give piakura. Transcriptions and arrangements may be derivative works of the original; piakura grants no rights to them.
+- When you give a URL, the audio is downloaded with yt-dlp. Follow the site's terms and your local law.
+- Audio, scores and settings stay on this machine or the worker host you choose. piakura sends nothing elsewhere, except the downloads above and a paid audio-review service only if you explicitly turn one on.
+
+## 要約（日本語）
+
+- piakura は Apache License 2.0 で提供され、無保証です。
+- 機械学習モデルの重みは含みません。音源を採譜するとき、重みと Python パッケージは、それぞれの配布元（Hugging Face、GitHub、PyPI、Google Drive）から、このマシンか利用者が選んだ SSH 先に取得されます。重みごとにライセンスがあり、商用利用を禁じるもの、利用申請が必要なもの、表示が食い違うものや未確認のものがあります（下の表）。確認して従うのは利用者の責任です。
+- piakura に渡す曲を使う権利は、利用者が持っている必要があります。採譜と編曲は原曲の二次的著作物になりえます。piakura はそれらの権利を与えません。
+- URL を渡すと、yt-dlp で音源を取得します。サイトの規約と各地の法律に従ってください。
+- 音源・楽譜・設定は、このマシンか利用者が選んだワーカーのホストの中に留まります。上の取得と、利用者が明示的に有効にした場合の有料の音声確認サービスを除き、piakura は外部へ何も送りません。
+
+## Models and their terms
+
+| Model | Used for | Source | License as published | Status |
+|---|---|---|---|---|
+| YourMT3+ (YPTF.MoE+Multi noPS) | multi-instrument transcription | Hugging Face Space `mimbres/YourMT3` | GitHub repository: GPL-3.0; Space metadata: Apache-2.0 | conflicting labels |
+| Basic Pitch | pitch/onset transcription | `basic-pitch` on PyPI (Spotify) | Apache-2.0, model included | published |
+| MuScriptor small/medium | piano/score transcription | Hugging Face `MuScriptor/*` (gated) | CC BY-NC 4.0 with access conditions (non-commercial, contact sharing, input-rights representations, indemnity) | access request required |
+| SheetSage2 | melody/harmony evidence | Hugging Face `m-a-p/SheetSage2` | CC BY-NC 4.0 | non-commercial |
+| GAME | singing transcription | GitHub `openvpi/GAME` release | CC BY-NC-SA 4.0 | non-commercial |
+| ROSVOT with RMVPE | singing transcription | GitHub and Google Drive | not stated in our records | unverified |
+| Demucs (htdemucs, htdemucs_6s) | source separation | `demucs` on PyPI | code MIT; weight license not found | unverified |
+| Mel-Band RoFormer guitar (becruily) | guitar separation | Hugging Face `becruily/mel-band-roformer-guitar` | owner permits non-commercial use; no license file | non-commercial |
+| Beat This | beat tracking | `beat-this` on PyPI | not stated in our records | unverified |
+| torchcrepe | pitch tracking | `torchcrepe` on PyPI | not stated in our records | unverified |
+
+"Unverified" means we did not find a license for the weights; it is not a permission. This is not legal advice.
+
+## Full text
+
+The summary above is the full set of terms. The piakura README repeats it with acknowledgments of the software piakura builds on.
