@@ -2,10 +2,36 @@
 set -euo pipefail
 # shellcheck source=skills/piakura-arranger/scripts/common.sh
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
+usage='Usage: export.sh [--language CODE] ARRANGEMENT-DIRECTORY DELIVERY-DIRECTORY\n'
+language=
+if [[ ${1:-} == --language ]]; then
+  [[ $# -ge 2 ]] || {
+    printf '%b' "$usage" >&2
+    exit 2
+  }
+  language=$2
+  shift 2
+fi
 [[ $# -eq 2 ]] || {
-  printf 'Usage: export.sh ARRANGEMENT-DIRECTORY DELIVERY-DIRECTORY\n' >&2
+  printf '%b' "$usage" >&2
   exit 2
 }
+# The README's language: --language, else the piakura setting, which
+# follows the locale (docs/i18n.md). Its words come from locales/<code>.sh.
+locales="$(dirname "${BASH_SOURCE[0]}")/locales"
+if [[ -z "$language" ]]; then
+  language=$(arranger_tool piakura config get language 2>/dev/null | tr -d '"') || language=en
+fi
+[[ "$language" =~ ^[a-z]{2,3}$ && -f "$locales/$language.sh" ]] || {
+  printf 'No delivery README in language %s; available:' "$language" >&2
+  for available in "$locales"/*.sh; do
+    printf ' %s' "$(basename "$available" .sh)" >&2
+  done
+  printf '\n' >&2
+  exit 2
+}
+# shellcheck source=skills/piakura-arranger/scripts/locales/en.sh
+source "$locales/$language.sh"
 source_dir=$(piakura_abspath "$1")
 destination=$2
 [[ ! -L "$destination" ]] || {
@@ -43,16 +69,7 @@ cleanup() {
 }
 trap cleanup EXIT
 printf 'piakura distribution v1\n' >"$staging/$marker"
-cat >"$staging/README.md" <<'GUIDE'
-# ピアノ演奏用MIDI
-
-MIDIを開いて演奏・再生できます。編集用のSakuraMMLはMIDIの隣にあります。
-通常版から始め、小型鍵盤では鍵盤モードに合う25鍵版を選んでください。
-音域・移調・切替位置・検証結果は各ファイルのレポートと編曲計画で確認できます。
-
-|版|Easy|Medium|Hard|
-|---|---|---|---|
-GUIDE
+msg_intro >"$staging/README.md"
 scores=0
 copy_group() {
   local relative=$1 label=$2 folder="$source_dir${1:+/$1}"
@@ -72,11 +89,7 @@ copy_group() {
         if [[ -f "$folder/$level-$sidecar.json" ]]; then
           mkdir -p -- "$staging/${sidecar}s/$(dirname "$score_path")"
           cp -- "$folder/$level-$sidecar.json" "$staging/${sidecar}s/$score_path.json"
-          case "$sidecar" in
-          report) cell+=" · [検証](reports/$score_path.json)" ;;
-          plan) cell+=" · [計画](plans/$score_path.json)" ;;
-          review) cell+=" · [配置の例外](reviews/$score_path.json)" ;;
-          esac
+          cell+=" · [$(msg_link "$sidecar")](${sidecar}s/$score_path.json)"
         fi
       done
       scores=$((scores + 1))
@@ -87,18 +100,10 @@ copy_group() {
 }
 # An explicit allowlist keeps source MIDI, obsolete scores and private musical
 # studies out of the delivery. The contract is documented in ../references/distribution.md.
-copy_group "" "通常版"
+copy_group "" "$(msg_group standard)"
 for mode in fixed-preserve fixed-auto-transpose switch-preserve switch-auto-transpose; do
   [[ -d "$source_dir/keyboard/$mode" ]] || continue
-  # These backticks are literal Markdown code spans in the generated README.
-  # shellcheck disable=SC2016
-  case "$mode" in
-  fixed-preserve) label='25鍵・固定・原調（`fixed-preserve`）' ;;
-  fixed-auto-transpose) label='25鍵・固定・移調（`fixed-auto-transpose`）' ;;
-  switch-preserve) label='25鍵・切替・原調（`switch-preserve`）' ;;
-  switch-auto-transpose) label='25鍵・切替・移調（`switch-auto-transpose`）' ;;
-  esac
-  copy_group "keyboard/$mode" "$label"
+  copy_group "keyboard/$mode" "$(msg_group "$mode")"
 done
 [[ "$scores" -gt 0 ]] || {
   printf 'No completed easy/medium/hard MIDI/MML pairs found\n' >&2
@@ -106,22 +111,9 @@ done
 }
 if [[ -f "$source_dir/arrangement-report.md" ]]; then
   cp -- "$source_dir/arrangement-report.md" "$staging/report.md"
-  printf '\n[編曲結果・演奏条件・切替表](report.md)\n' >>"$staging/README.md"
+  printf '\n[%s](report.md)\n' "$(msg_report_link)" >>"$staging/README.md"
 fi
-cat >>"$staging/README.md" <<'GUIDE'
-
-## keyboard/の名前と選び方
-
-フォルダ名は `<range-mode>-<key-policy>` です。
-
-- `fixed`: 曲全体で同じ25鍵を使い、曲中のOCT切替を行いません。演奏前には目標音域へ設定します。
-- `switch`: 区間ごとに実機のOCT設定を変更します。最低2秒の操作用休符があり、レポートの切替表に従って操作します。
-- `preserve`: 原調の音名を保持します。音域に収めるためのオクターブ移動は許可します。
-- `auto-transpose`: 音域への収まりを考慮して曲全体の移調を許可します。移調量は曲全体で共通です。
-
-曲中の操作なしで原調を弾くなら `fixed-preserve`、移調してもよければ `fixed-auto-transpose` を選びます。
-導入や間奏で低い音域も使いたい場合は `switch` 版を選びます。実際の音域・移調量・切替位置は各版の編曲計画とレポートで確認してください。
-GUIDE
+msg_keyboard_guide >>"$staging/README.md"
 comparison_heading=false
 for excerpt in phrase harmony interlude; do
   file="comparisons/easy/$excerpt"
@@ -132,26 +124,12 @@ for excerpt in phrase harmony interlude; do
     cp -- "$source_dir/$file.mml" "$staging/$file.mml"
   fi
   if [[ "$comparison_heading" == false ]]; then
-    printf '\n## 聴き比べ\n\n' >>"$staging/README.md"
+    printf '\n## %s\n\n' "$(msg_comparisons)" >>"$staging/README.md"
     comparison_heading=true
   fi
-  case "$excerpt" in
-  phrase) label='冒頭の主旋律' ;;
-  harmony) label='コード変化部' ;;
-  interlude) label='器楽間奏' ;;
-  esac
-  printf -- '- [%s](%s.mid)\n' "$label" "$file" >>"$staging/README.md"
+  printf -- '- [%s](%s.mid)\n' "$(msg_excerpt "$excerpt")" "$file" >>"$staging/README.md"
 done
-cat >>"$staging/README.md" <<'GUIDE'
-
-## 演奏と編集
-
-- 25鍵固定版は曲全体で同じ音域、切替版は区間ごとに音域を変更します。目標MIDI音域と切替休符をレポートで確認して鍵盤を設定してください。
-- MMLを編集した場合は再コンパイルと検証が必要です。移調や切替の計画ではコンパイル後の音符IDも更新します。
-- 検証PASSは定義された条件への適合を示します。響きや実機での運指は試聴・演奏で確認してください。
-
-ファイルの内容はこのフォルダで `sha256sum --check SHA256SUMS`（macOSでは `shasum -a 256 -c SHA256SUMS`）を実行して確認できます。
-GUIDE
+msg_playing >>"$staging/README.md"
 (
   cd "$staging"
   # Collect paths before opening the manifest so the checksum never includes

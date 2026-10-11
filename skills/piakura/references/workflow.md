@@ -66,7 +66,7 @@ Follow [piakura-arranger](../../piakura-arranger/SKILL.md) with the job's settin
 
 ## delivery
 
-`bash ../piakura-arranger/scripts/export.sh "$WORK" "$DELIVERY"` after every level passes validation, with the customer-facing `arrangement-report.md` in `$WORK`. Tell the user where the delivery README and MIDI files are, and the musical limitations that matter for playing. When `job next` says `redeliver`, validate the changed levels and export again.
+`bash ../piakura-arranger/scripts/export.sh --language CODE "$WORK" "$DELIVERY"` (the job's [language](language.md)) after every level passes validation, with the customer-facing `arrangement-report.md` in `$WORK`. Tell the user where the delivery README and MIDI files are, and the musical limitations that matter for playing. When `job next` says `redeliver`, validate the changed levels and export again.
 
 ## review
 

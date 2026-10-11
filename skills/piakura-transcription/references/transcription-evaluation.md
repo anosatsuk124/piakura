@@ -1,16 +1,16 @@
-# 採譜の近似比較
+# Approximate transcription comparison
 
-`midieval reference.mid candidate.mid --json`は、採譜候補を参照MIDIへ近似照合する読み取り専用コマンド。`mididiff`の意味的な完全一致や`midistat`の旋律保持契約とは別の評価で、音楽性のPASS/FAILを出さない。
+`midieval reference.mid candidate.mid --json` is a read-only command that approximately matches a transcription candidate against a reference MIDI. It is an evaluation separate from `mididiff`'s exact semantic equality and from `midistat`'s melody preservation contract, and it gives no PASS/FAIL on musicality.
 
-`--reference-channels 1,2`と`--candidate-channels 3`は1始まり。省略は全チャンネル、CH10は既定で除外（`--include-drums`で含める）。他のパーカッションbankやモデル固有の楽器分類は自動除外しないため、役割を確認してチャンネルを選ぶ。楽器番号・velocityは一致条件に含めない。曖昧な同音ペアと非正の音長は評価を拒否する。元SMFの警告はJSONに残る。
+`--reference-channels 1,2` and `--candidate-channels 3` are 1-based. Omitted means all channels; CH10 is excluded by default (`--include-drums` includes it). Other percussion banks and model-specific instrument classes are not excluded automatically, so check each channel's role before choosing channels. Program numbers and velocity are not match criteria. Ambiguous same-pitch pairs and non-positive durations make the evaluation refuse. Warnings from the source SMFs stay in the JSON.
 
-音高と開始秒（既定±0.05秒、`--onset-tolerance`で指定）から最大一対一マッチングを行う。PPQNとテンポ変化はSMFごとに秒へ変換する。同じ参照音に複数候補を一致させない。音長付きの指標は終了秒の差が参照音長の20%または50msの大きい方以内であることも要求する。これは[MIR評価の一般的な基準](https://mir-eval.readthedocs.io/latest/api/transcription.html)に沿った独立実装で、mir_evalの数値丸めまで同一ではない。
+It computes a maximum one-to-one matching from pitch and onset seconds (default ±0.05 seconds, set with `--onset-tolerance`). PPQN and tempo changes are converted to seconds per SMF. No reference note is matched to more than one candidate note. Metrics with durations also require the end-time difference to be within the larger of 20% of the reference note's duration and 50ms. This is an independent implementation following [the common MIR evaluation criteria](https://mir-eval.readthedocs.io/latest/api/transcription.html); it does not match mir_eval down to numeric rounding.
 
-`pitch_onset`、`pitch_onset_offset`は適合率・再現率・F1と一致音数。`pitch_class_onset`はオクターブを無視した診断値で、主指標へ代用しない。`sounding_pitch_class_jaccard`は発音中pitch class集合の積集合/和集合を、有音区間の長さで加重平均する。和声機能の正しさを示さず、無音は分母に含めない。両側空のF1、候補空の適合率、参照空の再現率はnull。平均誤差は一致した音だけに対する値。
+`pitch_onset` and `pitch_onset_offset` give precision, recall, F1 and the number of matched notes. `pitch_class_onset` is a diagnostic that ignores octaves; never substitute it for the main metrics. `sounding_pitch_class_jaccard` is the intersection/union of the sounding pitch-class sets, averaged with weights by the length of the sounding spans. It does not show correct harmonic function, and silence is not in the denominator. F1 with both sides empty, precision with an empty candidate and recall with an empty reference are null. Mean errors cover matched notes only.
 
-## 異なる編集版・演奏の時間対応
+## Time alignment across editions and performances
 
-`--alignment alignment.json`は候補秒から参照秒への区間内線形補間を与える。各区間には最低2つのアンカーが必要。秒は非負有限値、各区間内で両時間軸が厳密増加し、区間同士は両時間軸で順序を保ち重ならない。繰り返しの別箇所への再対応は別の比較として実行する。
+`--alignment alignment.json` gives linear interpolation within segments from candidate seconds to reference seconds. Each segment needs at least 2 anchors. Seconds are non-negative finite values; within each segment both timelines strictly increase, and segments keep their order on both timelines without overlapping. Mapping a repeat to a different occurrence is a separate comparison run.
 
 ```json
 {
@@ -25,6 +25,6 @@
 }
 ```
 
-共通区間とアンカーは音声・フレーズ・拍から確認し、全モデルの比較に同じものを使う。候補ごとの音符一致を最大化するためにアンカーを調整しない。区間をまたいだ補間と外挿は行わない。開始が区間内（先頭を含み末尾を含まない）の音を評価し、外の音数を別途報告する。区間より前に始まった持続音はこの選択に含まれない。末尾を越える音は和声集計で切り詰め、音長付き一致には数えず、平均音長誤差から除く。
+Confirm the shared segments and anchors from the audio, phrases and beats, and use the same ones for comparing every model. Keep the anchors fixed rather than adjusting them to maximize any candidate's note matches. There is no interpolation across segments and no extrapolation. Notes whose onset lies within a segment (start inclusive, end exclusive) are evaluated, and the number of notes outside is reported separately. A sustained note that started before a segment is not in this selection. A note running past the segment end is truncated in the harmony tally, not counted in matches with durations, and excluded from the mean duration error.
 
-整列なしは同じ秒タイムラインとみなす。時間対応が不明なら結果を採譜精度として解釈しない。入力/指定エラーはexit 2、評価成功は精度にかかわらずexit 0。`-o`は入力・alignmentと異なるファイルへのatomic出力を行う。
+Without alignment, both files are taken to share one timeline in seconds. If the time correspondence is unknown, do not read the result as transcription accuracy. Input/argument errors exit 2; a successful evaluation exits 0 regardless of accuracy. `-o` writes atomically to a file that must differ from the inputs and the alignment.

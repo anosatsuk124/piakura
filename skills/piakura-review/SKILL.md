@@ -13,7 +13,7 @@ The session lives in a review directory beside the work it reviews, inside the p
 
 ## 1. Describe the session
 
-Write `spec.json`. Paths are relative to the review directory. Layer IDs stay stable across revisions, because diffs and the reviewer's draft follow IDs.
+Write `spec.json`. Paths are relative to the review directory. Layer IDs stay stable across revisions, because diffs and the reviewer's draft follow IDs. Its text (title, labels, notes, cautions, annotations, replies) is in the job's [language](../piakura/references/language.md); the page's own words follow each reviewer's browser.
 
 - `audio`: the supplied recording.
 - `layers`, grouped by run or stage (`group`), each with exactly one of `mml`, `midi`, `f0`:
@@ -22,7 +22,7 @@ Write `spec.json`. Paths are relative to the review directory. Layer IDs stay st
   - each arrangement level (`arrangement`);
   - F0 contours (`pitch.json`) when the evidence has them.
 - `grid`: the measured beat clock (a beats file, or `bpm`/`origin_seconds`/`beats_per_bar`), with a `note` stating how it was estimated. Score `Tempo()` in this project is a seconds clock, not the meter. `origin_seconds` is the downbeat of bar 1: the roll's bar lines and every layer's readable view count bars from it, so fix it with [clock evidence](../piakura-readable-mml/references/clock-evidence.md).
-- `readable`: publish adds a generated [readable](../piakura-readable-mml/SKILL.md) view to every notes layer; choose its `section_set`, and `"chords": "both"` so its bar comments carry names and degrees for the export video. Mark layers whose MML already is readable with `"readable": {"disabled": true}`, and add a readable score the reviewer should hear as its own `mml` layer with the `offset_seconds` from its report.
+- `readable`: publish adds a generated [readable](../piakura-readable-mml/SKILL.md) view to every notes layer; choose its `section_set`, its `language` (the job's), and `"chords": "both"` so its bar comments carry names and degrees for the export video. Mark layers whose MML already is readable with `"readable": {"disabled": true}`, and add a readable score the reviewer should hear as its own `mml` layer with the `offset_seconds` from its report.
 - `section_sets`: your section split; each section's `note` says what happens musically and `cautions` says what the reviewer should check there.
 - `annotations`: every unresolved or uncertain passage and every validator warning or voicing issue that has a time, with `severity` and the MML comment IDs it concerns in `tags`.
 - `summary`: the state of the work in one paragraph, including what is provisional.

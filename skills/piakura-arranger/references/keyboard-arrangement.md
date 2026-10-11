@@ -1,23 +1,23 @@
-# 鍵盤数・音域・調の指定
+# Keyboard size, range and key
 
-Skillは`keys=N`、`lowest-note=auto|MIDI番号`、`range-mode=fixed|switch`、`key-policy=preserve|auto-transpose`を受け取る。既定は88鍵/MIDI21〜108/fixed/preserve。25鍵指定時は最低音を自動提案する。鍵盤数は黒鍵を含む連続した半音の数で、25鍵の最高音は最低音+24。
+The skill takes `keys=N`, `lowest-note=auto|MIDI`, `range-mode=fixed|switch` and `key-policy=preserve|auto-transpose`. Defaults: 88 keys / MIDI 21–108 / fixed / preserve. When 25 keys are given, it proposes the lowest note automatically. The key count is the number of consecutive semitones including black keys; on 25 keys the highest note is the lowest note + 24.
 
-autoの音域選択と編曲はSkillが行う。旋律の輪郭、句単位のオクターブ移動、和声の性格、保持中の左右配置と半音衝突を考慮する。フレーズと和声区間ごとに音域・旋律・伴奏を一緒に選び、伴奏の配置/分散/音数/離鍵を組み直す。詳細はSkillの[配置判断](voicing.md)と[検証契約](voicing-contract.md)を参照。DMK-25 PRO向けの推奨最低音はMIDIのC（12の倍数）から選ぶ。最低音の明示指定はそれ以外の音名も許可する。初期OCT設定が不明なら、目標MIDI音域を記録し、実機の現在値や必要なボタン操作回数は未確認とする。
+The skill chooses the range for auto and does the arranging. It weighs the melody's contour, octave shifts by whole phrases, the harmony's character, and the hands' layout and semitone clashes while notes are held. For each phrase and harmonic interval, choose register, melody and accompaniment together, and rework the accompaniment's placement/arpeggiation/note count/releases. Details: the skill's [voicing decisions](voicing.md) and [validation contract](voicing-contract.md). Choose the recommended lowest note for the DMK-25 PRO from MIDI Cs (multiples of 12). An explicit lowest note may also be any other note name. If the initial OCT setting is unknown, record the target MIDI range and mark the device's current setting and the number of button presses needed as unconfirmed.
 
-preserveはpitch classを保ち、必要なオクターブ移動を許す。auto-transposeは曲全体で一つの半音移調量（-12〜12）を選ぶ。移調による旋律の変化を最小限にし、区間ごとに別の調へ変えない。
+preserve keeps pitch classes and allows the octave shifts needed. auto-transpose chooses one transposition in semitones (-12 to 12) for the whole song. Keep the melody's change from transposition minimal, and keep the same key across all sections.
 
-fixedは曲全体で同じN鍵を使う。switchは区間ごとに12半音単位で最低音を切り替える。切替には両手の離鍵、CC64/66の解除、最低2秒を満たす整数拍の休符が必要。テンポ/拍子と後続イベントも追加休符ぶん移動する。切替Markerを休符の開始に置く。Markerを表示しないプレイヤーではレポートの切替表を使う。
+fixed uses the same N keys for the whole song. switch moves the lowest note per section in steps of 12 semitones. A switch needs both hands released, CC64/66 off, and a rest of a whole number of beats lasting at least 2 seconds. Tempo/time-signature events and all later events also move by the added rest. Put the switch Marker at the start of the rest. With players that do not show Markers, use the report's switch table.
 
-## 検証CLI
+## Validation CLI
 
-固定音域だけを検証する場合:
+To validate a fixed range only:
 
 ```bash
 bash scripts/tool.sh midistat "$WORK/easy.mid" --profile easy --hands RH=1,LH=2 \
   --piano-mode solo --keys 25 --lowest-note 60 --require-pass
 ```
 
-オクターブ移動、移調、切替休符を原曲と比較する場合:
+To compare octave shifts, transposition and switch rests with the original:
 
 ```bash
 bash scripts/validate.sh \
@@ -27,7 +27,7 @@ bash scripts/validate.sh \
 
 ## ArrangementPlan v1
 
-JSONは16MiB以内。未知フィールド・複数JSON・不正な値は入力エラー（exit2）。計画がある場合はその鍵盤設定を使い、明示したCLIのkeys/lowest-noteと矛盾すれば拒否する。元曲/出力の完全な時間軸を覆う区間を順番に記録する。区間内はPPQN換算以外の時間伸縮を許可しない。
+The JSON is at most 16MiB. Unknown fields, multiple JSON values and invalid values are input errors (exit 2). With a plan, its keyboard settings are used, and explicit CLI keys/lowest-note that contradict it are rejected. Record, in order, sections covering the complete source/output timelines. Within a section, no time stretching other than PPQN conversion is allowed.
 
 ```json
 {
@@ -51,12 +51,12 @@ JSONは16MiB以内。未知フィールド・複数JSON・不正な値は入力�
 }
 ```
 
-この例の切替Markerはtick960に`Maker("piakura:range:60:84")`。固定したupstreamの命令名は`Maker`（`Marker`は構文エラー）。120BPMなら1920tickの休符は2秒。各区間にMMLの`@section`、`@keyboard-range`、切替に`@octave-switch`、冒頭に`@transpose`を残す。
+In this example the switch Marker is `Maker("piakura:range:60:84")` at tick 960. The pinned upstream's command name is `Maker` (`Marker` is a syntax error). At 120BPM a 1920-tick rest lasts 2 seconds. Leave in the MML `@section` and `@keyboard-range` for each section, `@octave-switch` at each switch, and `@transpose` at the top.
 
-`melody_mapping`は選択した原曲旋律の全音符について、出力先または省略理由を一つ記録する。track/on_orderはSMFの0始まりトラックとNoteOnイベント順序で、`smf2sakura --no-split-channels --report`のnotesから取得する。MMLを再コンパイルしたら出力IDも再確認する。
+`melody_mapping` records, for every note of the selected source melody, exactly one output note or omission reason. track/on_order are the SMF's 0-based track and NoteOn event order, taken from the notes of `smf2sakura --no-split-channels --report`. After recompiling the MML, recheck the output IDs.
 
-検証器は出力音符の実在、開始tick、移調を補正したpitch class、同じ出力音符を複数の原曲音符へ割り当てていないことを確認する。補正後保持率を別項目に記録し、Medium/Hardは100%を要求する。Easyの省略も全件明示する。参照MIDIがなければ時刻対応と調の検証はUNKNOWN。
+The validator checks that each output note exists, its onset tick, its pitch class corrected for transposition, and that no output note is assigned to more than one source note. It records the corrected preservation rate as a separate field, and Medium/Hard require 100%. Declare every Easy omission too. Without a reference MIDI, time alignment and key validation are UNKNOWN.
 
-検証PASSは実機のOCT設定、運指、音楽としての自然さの保証ではない。実機に目標音域を設定して演奏する必要がある。
+A validation PASS does not guarantee the device's OCT setting, fingering or musical naturalness. The device must be set to the target range before playing.
 
-Skillの標準検証は`--preserve-melody`を使い、省略を認めず押鍵時間もPPQN換算で保持する。ArrangementPlan v1の`omit_reason`は明示的に旋律を簡略化した分析にも使えるが、この保持契約を免除しない。音高/開始が合うだけで音長の変更を見逃さない。
+The skill's standard validation uses `--preserve-melody`: it allows no omissions and also requires held durations preserved under PPQN conversion. ArrangementPlan v1's `omit_reason` can also serve an analysis that explicitly simplifies the melody, but it does not exempt notes from this preservation contract. Matching pitch/onset alone does not let a changed duration pass.

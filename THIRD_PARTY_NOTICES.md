@@ -1,6 +1,6 @@
 # Third-party notices
 
-piakura's binaries contain the software below. piakura itself is licensed under the Apache License 2.0 (LICENSE). Machine-learning model weights are not included; see the README for the models piakura downloads at run time and their terms.
+piakura's binaries contain the software below. piakura itself is licensed under the Apache License 2.0 (LICENSE); its binaries are distributed without their source code. Machine-learning model weights are not included; see the README for the models piakura downloads at run time and their terms.
 
 ## Go modules
 

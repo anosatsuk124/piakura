@@ -1,24 +1,16 @@
 # Terms of use
 
-TERMS_VERSION: 2026-10-09
+TERMS_VERSION: 2026-10-12
 
-Show the user the summary in their language (English and Japanese below; translate faithfully for others) and ask them to accept, read the full text, or decline. Record acceptance only after an explicit yes, with `piakura terms accept --version 2026-10-09`; the record goes to the user's own settings, not a project's. When this version changes, ask again.
+Show the user the summary below in their language: translate it faithfully, adding, dropping or softening nothing, and keep names, licenses and links as they are. Ask them to accept, read the full text, or decline. Record acceptance only after an explicit yes, with `piakura terms accept --version 2026-10-12`; the record goes to the user's own settings, not a project's. When this version changes, ask again.
 
-## Summary (English)
+## Summary
 
-- piakura is licensed under the Apache License 2.0 and comes with no warranty.
+- piakura is licensed under the Apache License 2.0 and comes with no warranty. Its command-line tools are distributed as binaries without their source code, so they are not open source for now; the license still lets you use and redistribute them.
 - It bundles no machine-learning model weights. When you transcribe audio, the weights and Python packages are downloaded from their own publishers (Hugging Face, GitHub, PyPI, Google Drive) to this machine or to the SSH worker you choose. Each has its own license. Some forbid commercial use, one requires an access request, and some have conflicting or unverified license labels (table below). You are responsible for checking and following them.
 - You must have the rights to the music you give piakura. Transcriptions and arrangements may be derivative works of the original; piakura grants no rights to them.
 - When you give a URL, the audio is downloaded with yt-dlp. Follow the site's terms and your local law.
 - Audio, scores and settings stay on this machine or the worker host you choose. piakura sends nothing elsewhere, except the downloads above and a paid audio-review service only if you explicitly turn one on.
-
-## 要約（日本語）
-
-- piakura は Apache License 2.0 で提供され、無保証です。
-- 機械学習モデルの重みは含みません。音源を採譜するとき、重みと Python パッケージは、それぞれの配布元（Hugging Face、GitHub、PyPI、Google Drive）から、このマシンか利用者が選んだ SSH 先に取得されます。重みごとにライセンスがあり、商用利用を禁じるもの、利用申請が必要なもの、表示が食い違うものや未確認のものがあります（下の表）。確認して従うのは利用者の責任です。
-- piakura に渡す曲を使う権利は、利用者が持っている必要があります。採譜と編曲は原曲の二次的著作物になりえます。piakura はそれらの権利を与えません。
-- URL を渡すと、yt-dlp で音源を取得します。サイトの規約と各地の法律に従ってください。
-- 音源・楽譜・設定は、このマシンか利用者が選んだワーカーのホストの中に留まります。上の取得と、利用者が明示的に有効にした場合の有料の音声確認サービスを除き、piakura は外部へ何も送りません。
 
 ## Models and their terms
 

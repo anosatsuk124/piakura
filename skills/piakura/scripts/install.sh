@@ -120,14 +120,15 @@ if [[ -n ${PIAKURA_RELEASE_URL:-} ]]; then
   for file in "$asset" SHA256SUMS; do
     curl -fsSL -o "$tmp/$file" "$PIAKURA_RELEASE_URL/$file" || die "Cannot download $PIAKURA_RELEASE_URL/$file"
   done
+# A logged-in GitHub CLI can also read releases the account sees privately;
+# anyone else downloads the public release directly.
 elif command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
   gh release download "$version" -R "$repo" -p "$asset" -p SHA256SUMS -D "$tmp" ||
     die "Cannot download $version from $repo; check that your GitHub account can read it"
 else
   base=https://github.com/$repo/releases/download/$version
   for file in "$asset" SHA256SUMS; do
-    curl -fsSL -o "$tmp/$file" "$base/$file" ||
-      die "Cannot download $base/$file. While the repository is private, install the GitHub CLI and run 'gh auth login'."
+    curl -fsSL -o "$tmp/$file" "$base/$file" || die "Cannot download $base/$file"
   done
 fi
 

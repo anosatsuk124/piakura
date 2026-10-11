@@ -38,7 +38,7 @@ bash scripts/transcribe.sh infer "$WORK/audio.wav" "$WORK/candidate-sheetsage2" 
 The [official model](https://huggingface.co/m-a-p/SheetSage2) accepts the normal
 mixed recording. The adapter pins upstream code, adapter weights and the verified
 MERT base; weights are CC-BY-NC-4.0. Setup locks a CUDA 12.6 build usable on CPU
-or a compatible GPU. Inference uses FP32, including on RTX 20xx. Retain separate
+or a compatible GPU. Inference uses FP32, including on GPUs without native BF16. Retain separate
 vocal/instrumental melody MIDI, chord proposals, events, original-time playback,
 ABC and token tensors under the attempt's `sheetsage2/` directory. Prepare raw
 MIDI with the Go tools before editing. Treat role changes as hypotheses.

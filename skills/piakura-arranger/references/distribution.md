@@ -1,23 +1,23 @@
-# 演奏用出力の契約
+# Performance delivery contract
 
-`bash scripts/export.sh "$WORK" "$DELIVERY"`は、コンパイル・検証済みの作業ディレクトリ（`$WORK`）から演奏用ファイルを納品先（`$DELIVERY`）へまとめる。編曲・コンパイル・検証を行うコマンドではなく、完成したファイルの出力先を整える。
+`bash scripts/export.sh --language CODE "$WORK" "$DELIVERY"` gathers the performance files from a compiled and validated work directory (`$WORK`) into the delivery directory (`$DELIVERY`). It does not arrange, compile or validate; it lays out the finished files at the destination.
 
 ```text
 $DELIVERY/
-├── README.md                 # 各版のMIDI/MML/検証/計画へのリンク
-├── easy.mid / easy.mml       # 通常版（Medium/Hardも同様）
-├── keyboard/<mode>/          # 25鍵のfixed/switch × preserve/auto-transpose
-├── reports/                 # 検証JSON、通常版とkeyboard/を同じ構成で格納
-├── plans/                   # 編曲計画JSON、同じ構成
-├── reviews/                 # 任意の声部配置例外JSON、同じ構成
-├── comparisons/easy/        # phrase/harmony/interludeの比較用MIDIとMML
-├── report.md                # 任意の編曲結果・演奏条件・切替表
+├── README.md                 # delivery README in the job's language: links to each version's MIDI/MML/validation/plan
+├── easy.mid / easy.mml       # standard version (Medium/Hard likewise)
+├── keyboard/<mode>/          # 25-key fixed/switch × preserve/auto-transpose
+├── reports/                 # validation JSON, same layout as the standard version and keyboard/
+├── plans/                   # arrangement plan JSON, same layout
+├── reviews/                 # optional voicing exception JSON, same layout
+├── comparisons/easy/        # phrase/harmony/interlude comparison MIDI and MML
+├── report.md                # optional arrangement results, playing conditions, switch table
 ├── SHA256SUMS
 └── .piakura-dist
 ```
 
-各levelのMIDI/MMLは対で必要。存在するlevelだけを出力し、report/plan/reviewと比較用ファイルは存在すれば含める。通常版と4種類の鍵盤フォルダを明示的に列挙し、原曲、旧版、私的な編曲スクリプト、decisions JSONは`$WORK`に保持する。report.mdは`$WORK/arrangement-report.md`をそのままコピーするため、本文の相対リンクはこの出力構成に合わせて記述する。
+README.md is the delivery README in the job's language: `--language` sets it, defaulting to the piakura `language` setting; its words come from the `locales/` directory beside the script. Each level needs both its MIDI and its MML. Only levels that exist are exported; report/plan/review and comparison files are included when present. The standard version and the four keyboard folders are listed explicitly, so the original, old versions, private arrangement scripts and decisions JSON stay in `$WORK`. report.md is a verbatim copy of `$WORK/arrangement-report.md`, so write its relative links for this delivery layout.
 
-全ファイルを別ディレクトリへ作成してから出力先を置換する。不完全なMIDI/MMLの対などで失敗した場合は前回の出力を維持する。入力/出力の包含・同一パス、出力先symlink、所有Markerのない既存出力先は拒否する。既存の配布フォルダへの更新は再生成扱いで、出力先だけで加えた編集は引き継がない。
+All files are built in a separate directory before the destination is replaced. On failure, such as an incomplete MIDI/MML pair, the previous delivery stays. It rejects input and output paths that are the same or contain each other, a symlink destination, and an existing destination without the ownership marker. Updating an existing delivery folder regenerates it; edits made only in the destination are not carried over.
 
-成果物の内容一致は出力先で`sha256sum --check SHA256SUMS`を実行して確認する。Gitはdist全体を除外する。検証の合格や音楽的な判断はコピー処理では再評価しない。
+Verify the delivered contents by running `sha256sum --check SHA256SUMS` in the destination. Keep the delivery out of Git commits. The copy does not re-evaluate validation results or musical judgments.

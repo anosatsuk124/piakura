@@ -1,19 +1,19 @@
-# 声部配置と例外の検証
+# Voicing and exception validation
 
-`midistat --check-voicing`は、左右の配置と同時半音を検査する。Skillのvalidate/compareは常にこの検査と`--require-pass`を使う。単独のmidistatは従来どおり任意指定。鍵盤数やsolo/splitに関係なく同じ規則を使う。
+`midistat --check-voicing` checks the hands' layout and simultaneous semitones. The skill's validate/compare always use this check and `--require-pass`. For standalone midistat it stays optional, as before. The same rules apply regardless of key count or solo/split.
 
-- `hand_crossing`: 実際に保持しているLHの音がRHの音より高い音符ペア。
-- `close_interval`: 同じ手または異なる手で、保持区間が重なり、実音高が1半音だけ離れたペア。pitch classの差だけでは判定しない。
+- `hand_crossing`: a note pair in which an actually held LH note is higher than an RH note.
+- `close_interval`: a pair, in the same hand or different hands, whose held intervals overlap and whose sounding pitches are exactly 1 semitone apart. A pitch-class difference alone does not count.
 
-重なりは`[max(start), min(end))`。ゼロ長音符は除外し、同tickの終了/開始は重なりに数えない。長い和音の途中に入る旋律も調べる。ペダル残響はこの押鍵検査へ加算せず、響きの確認で別に扱う。shared-keyの離鍵条件は[piano-output.md](piano-output.md)を引き続き適用する。
+The overlap is `[max(start), min(end))`. Zero-length notes are excluded, and an end and a start on the same tick do not overlap. Melody notes entering in the middle of a long chord are checked too. Pedal resonance is not added to this held-key check; it is handled separately when checking the sound. The shared-key release rules of [piano-output.md](piano-output.md) still apply.
 
-JSONの`voicing`に`score_sha256`、任意の`reference_sha256`、`detected`、`accepted`、`unresolved`、`issues`を出す。issuesは先頭200件、カウントは全件。各issueはrule/start_tick/end_tickと2音のref（track/on_order）・hand・pitchを持つ。未承認のペアはhard violationになりFAILとなる。手の所属が不明なら従来のUNKNOWNを維持する。
+The JSON's `voicing` contains `score_sha256`, optional `reference_sha256`, `detected`, `accepted`, `unresolved` and `issues`. issues lists the first 200; the counts cover all. Each issue has rule/start_tick/end_tick and, for each of its 2 notes, ref (track/on_order), hand and pitch. An unaccepted pair is a hard violation and FAILs. When hand assignment is unknown, the status stays UNKNOWN as before.
 
 ## VoicingReview v1
 
-交差は、声部の受け渡しや意図した対話など具体的な音楽的理由を持つ場合だけ承認する。「25鍵へ収めるため」だけでは理由にならない。半音は、原曲で同時に存在した実音程1半音の不協和を保持する場合だけ承認できる。広い音程をオクターブ圧縮してできた隣接音は組み直す。
+Accept a crossing only for a concrete musical reason, such as a voice handoff or an intended dialogue. "To fit 25 keys" alone is not a reason. A semitone may be accepted only when it preserves the dissonance of a sounding 1-semitone interval that existed simultaneously in the original. Rework adjacent notes produced by octave-compressing a wide interval.
 
-`--voicing-review "$WORK/easy-review.json"`で指定する。以下のハッシュは実際の`sha256sum`、音符IDはコンパイル後の`smf2sakura --no-split-channels --report`から取得する。
+Pass it with `--voicing-review "$WORK/easy-review.json"`. Take the hashes below from actual `sha256sum` output and the note IDs from `smf2sakura --no-split-channels --report` of the compiled MIDI. Write each `reason` in the job's language (`language` in the `settings` of `piakura-job.json`).
 
 ```json
 {
@@ -23,16 +23,16 @@ JSONの`voicing`に`score_sha256`、任意の`reference_sha256`、`detected`、`
     {
       "rule": "hand_crossing",
       "notes": [{"track":1,"on_order":12},{"track":2,"on_order":8}],
-      "reason": "左手の応答旋律を上声へ受け渡し、右手は下声の持続音を担当する。"
+      "reason": "The left hand's answering melody passes to the upper voice while the right hand takes the sustained lower voice."
     }
   ]
 }
 ```
 
-`close_interval`にはreview直下の`reference_sha256`と例外内の`source_notes`（原曲の2音のtrack/on_order）も必要。source_notesはnotesと同じ対応順とし、宣言された全体移調を補正したpitch classが一致すること、原曲でも実音程1半音で重なること、PPQN/切替休符を補正した原曲の重なり区間が出力の重なり全体を覆うことを検証する。
+`close_interval` also needs `reference_sha256` at the top level of the review and `source_notes` in the exception (track/on_order of the original's 2 notes). source_notes are in the same order as notes. The validator checks that their pitch classes match after correcting for the declared global transposition, that they also overlap at a sounding interval of 1 semitone in the original, and that the original's overlap, corrected for PPQN and switch rests, covers the entire output overlap.
 
-未知フィールド、16MiB超、複数JSON、未知version、ハッシュ不一致、存在しない/同一/重複したペア、検出事項に一致しない規則、空の理由、不適切な出典は入力エラー（exit2）。既存レポートを置き換えない。再コンパイル後は例外のIDとハッシュを更新し、理由も再確認する。無効なreviewを分析APIへ直接渡した場合も例外を承認しない。
+Unknown fields, more than 16MiB, multiple JSON values, an unknown version, a hash mismatch, a pair that does not exist, names the same note twice or is duplicated, a rule that matches no detected issue, an empty reason and unsuitable source evidence are input errors (exit 2). They leave an existing report in place. After recompiling, update the exceptions' IDs and hashes and recheck the reasons. An invalid review passed directly to the analysis API accepts no exception either.
 
-例外は当該ペアと規則だけに適用し、音域・手ごとの能力・共有鍵・旋律保持を免除しない。ArrangementPlan v1の構造は変更しない。レビューは編集可能な別スコアではない。
+An exception applies only to its pair and rule; it does not exempt range, per-hand limits, shared keys or melody preservation. The structure of ArrangementPlan v1 is unchanged. The review is not a separate editable score.
 
-機械検査は理由の音楽的妥当性、和声の機能、声部進行、ペダルの濁りを証明しない。原曲の該当区間と完成MIDIを照合し、意図した例外だけが残ることを確認する。Skillの完了には、この照合と検証PASSの両方が必要。
+The machine check does not prove the reason's musical validity, harmonic function, voice leading or the absence of pedal blur. Compare the corresponding passage of the original with the finished MIDI and confirm that only the intended exceptions remain. Completing the skill requires both this comparison and a validation PASS.

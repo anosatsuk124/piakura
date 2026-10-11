@@ -1,4 +1,11 @@
-# piakura
+![piakura: music you can actually play](brand/piakura-hero.svg)
+
+[![Release](https://img.shields.io/github/v/release/anosatsuk124/piakura?include_prereleases&sort=semver)](https://github.com/anosatsuk124/piakura/releases)
+[![License](https://img.shields.io/github/license/anosatsuk124/piakura)](LICENSE)
+![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20macOS%20%28Apple%20silicon%29-blue)
+![Agents](https://img.shields.io/badge/agents-Codex%20%7C%20Claude%20Code%20%7C%20OpenCode-blue)
+[![Stars](https://img.shields.io/github/stars/anosatsuk124/piakura?style=social)](https://github.com/anosatsuk124/piakura/stargazers)
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-support-FF5E5B?logo=kofi&logoColor=white)](https://ko-fi.com/anosatsuk124)
 
 [日本語](README.ja.md)
 
@@ -16,12 +23,11 @@ piakura turns a song into piano arrangements you can play. It is a set of skills
 
 | | |
 |---|---|
-| System | Linux (x86_64, arm64) or macOS on Apple silicon. Windows is not supported; WSL2 is untested. |
+| System | Linux (x86_64, arm64) or macOS on Apple silicon. Transcription on Linux needs x86_64: on Linux arm64, transcribe on an x86_64 machine over SSH. Windows is not supported; WSL2 is untested. |
 | Agent | [Codex CLI](https://learn.chatgpt.com/docs/cli), [Claude Code](https://code.claude.com/) or [OpenCode](https://opencode.ai/), and Node.js for `npx` |
 | Always | bash, python3 3.8+ |
-| While the repository is private | read access to `anosatsuk124/piakura`, and the [GitHub CLI](https://cli.github.com/) logged in (`gh auth login`) and set up for Git (`gh auth setup-git`), so that `npx skills add` can clone it |
-| Audio or a link | [mise](https://mise.jdx.dev/), ffmpeg, and about 20 GB of disk for model environments. A GPU is optional: an NVIDIA GPU on this machine or on a Linux machine you can reach over SSH. |
-| Review export | ffmpeg and fluidsynth; for Japanese titles in videos, fontconfig with a Japanese font (for example Noto CJK). A GPU video encoder is optional (VA-API on Linux, VideoToolbox on macOS); without one, MP4 encodes on the CPU |
+| Audio or a link | [mise](https://mise.jdx.dev/), ffmpeg, and about 20 GB of disk for model environments. A GPU is optional: an NVIDIA GPU on this machine or on an x86_64 Linux machine you can reach over SSH. |
+| Review export | ffmpeg and fluidsynth; for video titles in Chinese, Japanese or Korean, fontconfig with a CJK font (for example Noto Sans CJK). A GPU video encoder is optional (VA-API or NVENC on Linux, VideoToolbox on macOS); without one, MP4 encodes on the CPU |
 
 The agent checks these with `piakura doctor` and tells you how to install what is missing.
 
@@ -34,7 +40,7 @@ npx skills add anosatsuk124/piakura -a claude-code    # Claude Code (.claude/ski
 npx skills add anosatsuk124/piakura -a opencode       # OpenCode
 ```
 
-Install all five skills together: `piakura` (the entry point), `piakura-transcription`, `piakura-readable-mml`, `piakura-arranger` and `piakura-review` use each other. The command-line tools are downloaded on first use into `~/.local/share/piakura`, checked against the release's SHA-256 sums. The first run asks whether to also put the `piakura` command in `~/.local/bin` (one link), so you can start the review page yourself; your shell profile is never changed. The skills CLI sends anonymous usage data (for a private repository, not its name); set `DISABLE_TELEMETRY=1` to turn that off.
+Install all five skills together: `piakura` (the entry point), `piakura-transcription`, `piakura-readable-mml`, `piakura-arranger` and `piakura-review` use each other. The command-line tools are downloaded on first use into `~/.local/share/piakura`, checked against the release's SHA-256 sums. The first run asks whether to also put the `piakura` command in `~/.local/bin` (one link), so you can start the review page yourself; your shell profile is never changed. The skills CLI sends anonymous usage data; set `DISABLE_TELEMETRY=1` to turn that off.
 
 ## Use
 
@@ -101,6 +107,8 @@ piakura config set arrangement.keys 25 --scope project
 
 The agent runs these for you; the tools are in `~/.local/share/piakura/current/bin`, and in `~/.local/bin` if you chose the link.
 
+Reports, score comments, notes and the delivery README are written in your system's language (`LANG`; English when piakura does not support it, currently anything but English and Japanese). The `language` setting (`en`, `ja`) or `PIAKURA_LANGUAGE` chooses another. The review page follows each viewer's browser language; its settings can change it. The agent talks to you in the language you write in.
+
 ## Output
 
 ```text
@@ -129,6 +137,10 @@ Recordings, scores and settings stay on this machine or on the SSH host you choo
 - A passing validation means the score meets the defined limits for its level. Fingering, hand size and taste still need a player.
 - Local transcription on macOS and the Docker worker are experimental.
 
+## Source code and support
+
+The skills in this repository are published with their source. The command-line tools are not open source yet: their source code is not tidy enough to publish, and we plan to open it later. If you find piakura useful or interesting, a star or a mention to others keeps us going and brings that day closer. If you would like to support it further, you can do so on [Ko-fi](https://ko-fi.com/anosatsuk124). None of this is needed to use piakura.
+
 ## Acknowledgments
 
 piakura builds on:
@@ -143,9 +155,9 @@ The full notices ship with the tools as `THIRD_PARTY_NOTICES.md`.
 
 ## License and reservations
 
-TERMS_VERSION: 2026-10-09
+TERMS_VERSION: 2026-10-12
 
-piakura is licensed under the [Apache License 2.0](LICENSE) and comes with no warranty. You are asked to accept the following on first use.
+piakura is licensed under the [Apache License 2.0](LICENSE) and comes with no warranty. This applies to the skills in this repository and to the command-line tools in its releases alike. The tools are published as binaries only, without their source code, so they are not open source for now (see [Source code and support](#source-code-and-support)); the license still lets you use and redistribute them. The third-party software inside them keeps its own licenses, listed in `THIRD_PARTY_NOTICES.md`. You are asked to accept the following on first use.
 
 **Model weights are not included.** When you transcribe audio, the weights and Python packages are downloaded from their publishers to your machine or SSH host. Each has its own terms, which you are responsible for checking and following:
 

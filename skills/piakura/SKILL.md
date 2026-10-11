@@ -9,7 +9,7 @@ argument-hint: "[midi-or-audio-path-or-url]"
 
 You run the user's whole request from one invocation: consent, setup questions, tools, then the sibling skills [piakura-transcription](../piakura-transcription/SKILL.md), [piakura-readable-mml](../piakura-readable-mml/SKILL.md), [piakura-arranger](../piakura-arranger/SKILL.md) and [piakura-review](../piakura-review/SKILL.md). Musical decisions follow those skills; this one decides nothing musical.
 
-Conventions: script paths are relative to this skill's directory; run them through its absolute path. After installation, `P` stands for `bash ../piakura-arranger/scripts/tool.sh piakura`. Talk to the user in their language. Never answer a question for them, accept a model's or a site's conditions for them, or send their audio, scores or settings to a service they did not choose.
+Conventions: script paths are relative to this skill's directory; run them through its absolute path. After installation, `P` stands for `bash ../piakura-arranger/scripts/tool.sh piakura`. Talk to the user in their language, and write what people read in the job's [language](references/language.md). Never answer a question for them, accept a model's or a site's conditions for them, or send their audio, scores or settings to a service they did not choose.
 
 ## 1. Resume or start
 
@@ -24,7 +24,7 @@ Read [terms](references/terms.md). Unless `$P terms status --version <TERMS_VERS
 
 ## 3. Tools
 
-Run `bash scripts/install.sh --terms-version <TERMS_VERSION>`, adding `--link-bin` when `tools.link_bin` is `true` in the user's settings; it prints the tool directory and changes nothing outside piakura's data directory except that link. A private release needs the GitHub CLI logged in; relay the script's message if it fails. Then record consent: `$P terms accept --version <TERMS_VERSION>`.
+Run `bash scripts/install.sh --terms-version <TERMS_VERSION>`, adding `--link-bin` when `tools.link_bin` is `true` in the user's settings; it prints the tool directory and changes nothing outside piakura's data directory except that link. Relay the script's message if it fails. Then record consent: `$P terms accept --version <TERMS_VERSION>`.
 
 ## 4. Questions
 

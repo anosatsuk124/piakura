@@ -5,7 +5,7 @@
 - User: `${XDG_CONFIG_HOME:-~/.config}/piakura/config.json` (macOS too).
 - Project: `.piakura/config.json` in the current directory or a parent up to the Git root.
 
-Precedence, highest first: command-line flags, `PIAKURA_*` environment variables, project, user, defaults. A setting without a default stays unset until the user answers it. The consent record lives only in the user file. Secrets (Hugging Face tokens, API keys) are never stored here; Hugging Face uses its own login.
+Precedence, highest first: command-line flags, `PIAKURA_*` environment variables, project, user, defaults (for `language`, the locale before the default). A setting without a default stays unset until the user answers it. The consent record lives only in the user file. Secrets (Hugging Face tokens, API keys) are never stored here; Hugging Face uses its own login.
 
 ```bash
 P="bash ../piakura-arranger/scripts/tool.sh piakura"   # from this skill's directory
@@ -20,7 +20,7 @@ $P config keys
 | Key | Values | Default | Asked in |
 |---|---|---|---|
 | `tools.link_bin` | `true`, `false` (user settings only) | — | R5 |
-| `language` | `en`, `ja` | — | R5 |
+| `language` | `en`, `ja` | the locale's (`LC_ALL`, `LC_MESSAGES`, `LANG`), else `en` | R5 |
 | `checkpoints` | `end-to-end`, `each-stage` | `end-to-end` | R5 |
 | `workspace.work_root` | directory | `piakura/work` | R5 |
 | `workspace.delivery_root` | directory | `piakura/dist` | R5 |
@@ -53,7 +53,7 @@ $P config keys
 | `review.port` | port | — | — |
 | `terms.accepted_version`, `terms.accepted_at` | set by `piakura terms accept` | — | R0 |
 
-Environment variables override files: `PIAKURA_TRANSCRIPTION_HOST` (`transcription.ssh.host`), `PIAKURA_WORKER_ROOT` (`transcription.ssh.root`), `PIAKURA_WORKER_STATE` (`transcription.ssh.state_file`), `PIAKURA_TRANSCRIPTION_RUNTIME` (`transcription.local.runtime_dir`), `PIAKURA_WORKER_IMAGE` (`transcription.container.image`). `PIAKURA_BIN` selects the tool directory and `PIAKURA_RELEASE_URL` the release download location (`scripts/install.sh`).
+Environment variables override files: `PIAKURA_LANGUAGE` (`language`), `PIAKURA_TRANSCRIPTION_HOST` (`transcription.ssh.host`), `PIAKURA_WORKER_ROOT` (`transcription.ssh.root`), `PIAKURA_WORKER_STATE` (`transcription.ssh.state_file`), `PIAKURA_TRANSCRIPTION_RUNTIME` (`transcription.local.runtime_dir`), `PIAKURA_WORKER_IMAGE` (`transcription.container.image`). `PIAKURA_BIN` selects the tool directory and `PIAKURA_RELEASE_URL` the release download location (`scripts/install.sh`).
 
 ## Job file
 

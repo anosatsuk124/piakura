@@ -99,8 +99,8 @@ def sheetsage2(args):
         BASE_SHA256,
     ):
         raise ValueError("unexpected SheetSage2 base model")
-    # Upstream also verifies its pinned base-model weights and code. RTX 20xx
-    # lacks native BF16; FP32 is explicit on both CPU and GPU for parity.
+    # Upstream also verifies its pinned base-model weights and code. Older GPUs
+    # lack native BF16; FP32 is explicit on both CPU and GPU for parity.
     directory = args.output.parent / "sheetsage2"
     if directory.exists():
         raise ValueError("SheetSage2 output directory must be new")

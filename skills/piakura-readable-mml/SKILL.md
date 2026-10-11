@@ -24,12 +24,12 @@ Done when the downbeat rests on at least two independent kinds of evidence, writ
 
 ```bash
 bash ../piakura-arranger/scripts/tool.sh smf2sakura score.mid --mode readable --clock grid --grid-bpm 150.0067 --grid-downbeat 1.2207 \
-  --sections sections.json --chords both \
+  --sections sections.json --chords both --language en \
   -o score.readable.mml --readable-report score.readable.json --line-map score.readable.lines.tsv
 bash ../piakura-arranger/scripts/compile.sh score.readable.mml score.readable.mid
 ```
 
-`--sections` takes a list of `{label, start}` in recording seconds, or a piakura-review `spec.json` with `--section-set`. `--chords names|roman|both|none` chooses the bar comments. `--line-map` lists each input note's `track`, `on_order` and output line.
+`--sections` takes a list of `{label, start}` in recording seconds, or a piakura-review `spec.json` with `--section-set`. `--chords names|roman|both|none` chooses the bar comments. `--language` is the language of the comments' prose, the job's [language](../piakura/references/language.md); tags and chords stay as they are. `--line-map` lists each input note's `track`, `on_order` and output line.
 
 ## 3. Account for what moved
 

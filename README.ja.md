@@ -1,4 +1,11 @@
-# piakura
+![piakura: 弾けるピアノ編曲](brand/piakura-hero.svg)
+
+[![Release](https://img.shields.io/github/v/release/anosatsuk124/piakura?include_prereleases&sort=semver)](https://github.com/anosatsuk124/piakura/releases)
+[![License](https://img.shields.io/github/license/anosatsuk124/piakura)](LICENSE)
+![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20macOS%20%28Apple%20silicon%29-blue)
+![Agents](https://img.shields.io/badge/agents-Codex%20%7C%20Claude%20Code%20%7C%20OpenCode-blue)
+[![Stars](https://img.shields.io/github/stars/anosatsuk124/piakura?style=social)](https://github.com/anosatsuk124/piakura/stargazers)
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-support-FF5E5B?logo=kofi&logoColor=white)](https://ko-fi.com/anosatsuk124)
 
 [English](README.md)
 
@@ -16,12 +23,11 @@ piakura は、曲を弾けるピアノ編曲にするためのツールです。
 
 | | |
 |---|---|
-| OS | Linux（x86_64、arm64）、または Apple silicon の macOS。Windows は対象外で、WSL2 は未検証です。 |
+| OS | Linux（x86_64、arm64）、または Apple silicon の macOS。Linux での採譜は x86_64 が必要です。Linux の arm64 では、SSH で入れる x86_64 のマシンで採譜します。Windows は対象外で、WSL2 は未検証です。 |
 | エージェント | [Codex CLI](https://learn.chatgpt.com/docs/cli)、[Claude Code](https://code.claude.com/)、[OpenCode](https://opencode.ai/) のどれか。`npx` のために Node.js |
 | 常に | bash、python3 3.8 以上 |
-| リポジトリが private の間 | `anosatsuk124/piakura` の閲覧権限と、ログイン済みの [GitHub CLI](https://cli.github.com/)（`gh auth login`）。`npx skills add` がリポジトリを取得できるよう、Git にも設定します（`gh auth setup-git`） |
-| 音源・URL から始める場合 | [mise](https://mise.jdx.dev/)、ffmpeg、モデルの環境に約 20 GB の空き容量。GPU は任意です。このマシンの NVIDIA GPU か、SSH で入れる Linux マシンの NVIDIA GPU を使えます。 |
-| レビューの書き出し | ffmpeg と fluidsynth。動画の日本語の見出しには、fontconfig と日本語フォント（Noto CJK など）。GPU の動画エンコーダー（Linux は VA-API、macOS は VideoToolbox）は任意で、ないときは MP4 を CPU でエンコードします |
+| 音源・URL から始める場合 | [mise](https://mise.jdx.dev/)、ffmpeg、モデルの環境に約 20 GB の空き容量。GPU は任意です。このマシンの NVIDIA GPU か、SSH で入れる x86_64 の Linux マシンの NVIDIA GPU を使えます。 |
+| レビューの書き出し | ffmpeg と fluidsynth。動画の見出しに中国語・日本語・韓国語を使うときは、fontconfig と CJK フォント（Noto Sans CJK など）。GPU の動画エンコーダー（Linux は VA-API か NVENC、macOS は VideoToolbox）は任意で、ないときは MP4 を CPU でエンコードします |
 
 エージェントが `piakura doctor` で確かめ、足りないものの入れ方を案内します。
 
@@ -34,7 +40,7 @@ npx skills add anosatsuk124/piakura -a claude-code    # Claude Code（.claude/sk
 npx skills add anosatsuk124/piakura -a opencode       # OpenCode
 ```
 
-5つのスキルはまとめて入れてください。入口の `piakura` と、`piakura-transcription`・`piakura-readable-mml`・`piakura-arranger`・`piakura-review` は互いを参照しています。コマンドラインのツールは初回に `~/.local/share/piakura` へ取得され、リリースの SHA-256 で検証されます。初回には、`piakura` コマンドを `~/.local/bin` にも置くか（リンクを1つ作ります）を尋ねます。置くと、レビューのページを自分で起動できます。シェルの設定ファイルは変更しません。skills CLI は匿名の利用データを送ります（private なリポジトリの名前は送りません）。止めるには `DISABLE_TELEMETRY=1` を設定します。
+5つのスキルはまとめて入れてください。入口の `piakura` と、`piakura-transcription`・`piakura-readable-mml`・`piakura-arranger`・`piakura-review` は互いを参照しています。コマンドラインのツールは初回に `~/.local/share/piakura` へ取得され、リリースの SHA-256 で検証されます。初回には、`piakura` コマンドを `~/.local/bin` にも置くか（リンクを1つ作ります）を尋ねます。置くと、レビューのページを自分で起動できます。シェルの設定ファイルは変更しません。skills CLI は匿名の利用データを送ります。止めるには `DISABLE_TELEMETRY=1` を設定します。
 
 ## 使い方
 
@@ -101,6 +107,8 @@ piakura config set arrangement.keys 25 --scope project
 
 ふだんはエージェントがこれを実行します。ツールは `~/.local/share/piakura/current/bin` にあります。リンクを選んだ場合は `~/.local/bin` にもあります。
 
+レポート、楽譜のコメント、メモ、納品の README は、システムの言語（`LANG`）で書かれます。piakura が対応していない言語（いまは英語と日本語以外）なら英語になります。別の言語にするには、設定の `language`（`en`、`ja`）か `PIAKURA_LANGUAGE` を使います。レビュー画面は、見る人のブラウザの言語で表示され、画面の設定で変えられます。エージェントは、あなたが書く言語で話します。
+
 ## 出力
 
 ```text
@@ -135,6 +143,10 @@ piakura/dist/<曲>/
 - 検査に通ったことは、その難易度で定めた限度に収まっていることを示します。運指や手の大きさ、好みは、弾く人の判断が要ります。
 - macOS のこのマシンでの採譜と、Docker のワーカーは試験的な扱いです。
 
+## ソースコードと応援
+
+このリポジトリのスキルは、ソースのまま公開しています。コマンドラインのツールは、まだオープンソースではありません。ソースコードを公開できる形に整理しきれていないためで、いずれ公開する予定です。piakura が役に立ったら、あるいは面白そうだと思ったら、スターを付けたり、人に紹介したりしてもらえると励みになり、公開も早まります。[Ko-fi](https://ko-fi.com/anosatsuk124) で支援してもらえると、とてもうれしいです。どれも、piakura を使うために必要なことではありません。
+
 ## 謝辞
 
 piakura は次のものの上に作られています。
@@ -149,9 +161,9 @@ piakura は次のものの上に作られています。
 
 ## ライセンスと留保
 
-TERMS_VERSION: 2026-10-09
+TERMS_VERSION: 2026-10-12
 
-piakura は [Apache License 2.0](LICENSE) で提供され、無保証です。初回に次の内容への同意を求めます。
+piakura は [Apache License 2.0](LICENSE) で提供され、無保証です。このリポジトリのスキルにも、リリースのコマンドラインのツールにも、同じライセンスが適用されます。ツールはバイナリだけを公開し、ソースコードは公開していないので、今のところオープンソースではありません（[ソースコードと応援](#ソースコードと応援)）。ライセンスに従って、使うことも再配布することもできます。ツールに含まれる第三者のソフトウェアには、それぞれのライセンスが適用されます（`THIRD_PARTY_NOTICES.md`）。初回に次の内容への同意を求めます。
 
 **モデルの重みは含みません。** 音源を採譜するとき、重みと Python パッケージは、それぞれの配布元から利用者のマシンか SSH 先に取得されます。重みごとに条件があり、確認して従うのは利用者の責任です。
 

@@ -11,7 +11,7 @@ JSON keys are snake_case. Times are seconds of the source recording; `channel` i
   "summary": "Mixed-recording transcription and three levels; the bridge harmony is provisional.",
   "audio": [{ "id": "mix", "label": "Source (mix)", "path": "../source/audio.wav" }],
   "grid": { "bpm": 150.0067, "origin_seconds": 0.0207, "beats_per_bar": 4, "note": "pulse from drum attacks; meter provisional" },
-  "readable": { "section_set": "main", "chords": "both" },
+  "readable": { "section_set": "main", "chords": "both", "language": "en" },
   "section_sets": [
     { "id": "main", "label": "Sections", "sections": [
       { "id": "verse-a", "label": "verse A", "start": 20.4, "end": 33.2,
@@ -40,7 +40,7 @@ JSON keys are snake_case. Times are seconds of the source recording; `channel` i
 ```
 
 - `grid`: `beats` (a JSON file with `beats` and optional `downbeats` arrays, as Beat This writes) or `bpm` with `origin_seconds` and `beats_per_bar`. `origin_seconds` is a bar line (bar 1).
-- `readable`: the generated readable view of every notes layer. `section_set` (default the first), `chords` (`names`, `roman`, `both` or `none`; default `names`), `clock` (`grid` when the grid has a `bpm`, else `score`), `disabled`. A layer's `readable` overrides `section_set` or sets `disabled`, for MML that already is readable. A readable score added as a layer takes `offset_seconds` from its report: the recording second of its tick 0, negative when bar 0 starts before the recording.
+- `readable`: the generated readable view of every notes layer. `section_set` (default the first), `chords` (`names`, `roman`, `both` or `none`; default `names`), `clock` (`grid` when the grid has a `bpm`, else `score`), `language` (of the comment prose, the job's `language`; default `en`), `disabled`. A layer's `readable` overrides `section_set` or sets `disabled`, for MML that already is readable. A readable score added as a layer takes `offset_seconds` from its report: the recording second of its tick 0, negative when bar 0 starts before the recording.
 - `severity`: `info`, `caution` or `unresolved`.
 - `tags`: IDs that appear in MML comments (`// L0030 …`); the UI matches them in the comment text.
 - `f0`: `times` and `pitch` (fractional MIDI note numbers, `null` when unvoiced), optional `voicing_score`.
@@ -52,7 +52,7 @@ JSON keys are snake_case. Times are seconds of the source recording; `channel` i
 {
   "format": "piakura-review-feedback/1",
   "id": "0001",
-  "submitted_at": "2026-10-08T13:05:22+09:00",
+  "submitted_at": "2026-10-08T04:05:22Z",
   "summary": "Overall the left hand is too choppy.",
   "comments": [
     { "id": "c1", "revision": "r1", "target": "preference", "start": 12.3, "end": 15.8,
@@ -91,7 +91,7 @@ NoteRef cites a published note:
   "readable_line": 41, "readable_line_text": "o6 l8 a2^8 r8 g f+ // 1: GM7(IVM7)" }
 ```
 
-`track`/`on_order` is the same pair as `NoteRef` in arrangement plans and voicing reviews (compiled SMF track and NoteOn event index). `line` is the 1-based MML line that produced the note, `null` when unmapped; `line_text` is that line, so the note stays findable after you renumber. `readable_line` / `readable_line_text` give the bar line of the layer's readable view when it has one; edit the MML that `line` cites.
+`track`/`on_order` is the same pair as `NoteRef` in arrangement plans and voicing reviews (compiled SMF track and NoteOn event index). `line` is the 1-based MML line that produced the note, `null` when unmapped; `line_text` is that line, so the note stays findable after you renumber; a note the reviewer added in the draft has `line: null` and `line_text: "(note added in draft)"`, whatever the page's language. `readable_line` / `readable_line_text` give the bar line of the layer's readable view when it has one; edit the MML that `line` cites.
 
 NoteValue is a proposed note: `track`, `channel`, `pitch`, `name`, `velocity`, `start`, `end`, plus `start_tick`/`end_tick` on the layer's clock.
 
@@ -105,7 +105,7 @@ NoteValue is a proposed note: `track`, `channel`, `pitch`, `name`, `velocity`, `
 - `state.json`: the reviewer's view, unsent draft and navigation markers (`markers`, not feedback).
 - `state-tablet.json`: the view of the reviewer's tablet layout (`{format: "piakura-review-view/1", view}`). The draft and markers in `state.json` are shared by both layouts.
 
-The reviewer's volumes and default settings live outside the review directory (`~/.config/piakura-review/settings.json`, `~/.local/state/piakura-review/mixers/`, each with a `-tablet` twin); you never need to read them.
+The reviewer's volumes and default settings live outside the review directory (`piakura-review/settings.json` in the user configuration directory, `~/.config` on Linux and `~/Library/Application Support` on macOS, and `piakura-review/mixers/` in the state directory, `~/.local/state` by default; each with a `-tablet` twin); you never need to read them.
 
 ## Line mapping limits
 

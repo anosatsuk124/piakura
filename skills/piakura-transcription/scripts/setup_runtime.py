@@ -139,9 +139,11 @@ def family_for(backend):
 
 
 def lock_for(family):
-    # The Linux locks pin CUDA wheels. macOS on Apple silicon (CPU only, an
-    # experimental path) has separate locks for the families that resolve
-    # there; the others are not available on macOS.
+    # The Linux locks pin CUDA wheels resolved for x86_64 (triton, for one,
+    # publishes no other Linux wheels), so other Linux machines stop here
+    # rather than fail halfway through an install. macOS on Apple silicon
+    # (CPU only, an experimental path) has separate locks for the families
+    # that resolve there; the others are not available on macOS.
     if sys.platform == "darwin":
         lock = SCRIPT / "environments" / (family + ".darwin-arm64.lock")
         if platform.machine() != "arm64" or not lock.exists():
@@ -149,6 +151,11 @@ def lock_for(family):
                 f"{family} is not available on this Mac; use an SSH worker"
             )
         return lock
+    if platform.machine() != "x86_64":
+        raise ValueError(
+            f"{family} needs x86_64 Linux, not {platform.machine()}; "
+            "use an x86_64 SSH worker"
+        )
     return SCRIPT / "environments" / (family + ".lock")
 
 

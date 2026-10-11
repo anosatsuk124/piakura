@@ -14,7 +14,7 @@ How to ask:
 Only when `piakura terms status --version <TERMS_VERSION>` fails (or the tools are not installed yet). Show the summary from [terms](terms.md).
 
 - Accept: continue; the acceptance is stored in the user's own settings with the terms version and time.
-- Show the full text: show all of terms.md, then ask again.
+- Show the full text: show the summary and the license table of terms.md, translated the same way, then ask again.
 - Decline: stop and tell the user that nothing was installed or saved.
 
 ## R1 Saved settings
@@ -71,7 +71,7 @@ Saved as `transcription.where`, `transcription.how`, `transcription.device`, `tr
 2. Only while `tools.link_bin` is unset: put the `piakura` command on your PATH? It links `~/.local/bin/piakura` (or `$XDG_BIN_HOME/piakura`) to the installed tools, so you can start and stop the review page yourself (`piakura review start`) without an agent. Nothing else changes; an existing file there is left alone, and if that directory is not on your PATH you are told how to add it. Yes / No. Save the answer right away with `$P config set tools.link_bin true|false --scope user`: it describes this computer, whatever R6 says.
 3. Pace: run to the end / stop after each stage for a look.
 4. Work and delivery directories (defaults `piakura/work/<slug>` and `piakura/dist/<slug>` under the current directory); inside a Git repository, whether to add them to `.gitignore` (recommended: copyrighted material stays out of commits).
-5. Language of reports and the delivery README.
+5. Language of reports, notes, score comments and the delivery README ([language](language.md)): default the `language` that `$P config resolve` shows, which follows the locale until saved. The review page itself follows each viewer's browser and has its own setting.
 
 ## R6 Confirm and save
 

@@ -82,7 +82,7 @@ bash scripts/transcribe.sh infer "$WORK/fixture/audio.wav" "$WORK/fixture/muscri
 bash scripts/worker.sh --host USER@HOST import-weights muscriptor-small "$WORK/models/muscriptor-small/model.safetensors"
 ```
 
-Small and medium are supported with pinned revisions and official SHA256 checks. Automatic tempo detection is disabled in this adapter because MuScriptor 0.3 can otherwise move note onsets onto a detected grid; beat correction remains an explicit review step. Large remains a research candidate, outside this 8GB worker configuration. An access grant is not a grant of rights over input music.
+Small and medium are supported with pinned revisions and official SHA256 checks. Automatic tempo detection is disabled in this adapter because MuScriptor 0.3 can otherwise move note onsets onto a detected grid; beat correction remains an explicit review step. Large remains a research candidate: it needs more VRAM than the 8 GB GPU the adapter was tested on, so check the worker's free VRAM first. An access grant is not a grant of rights over input music.
 
 ## Targeted separation and beats
 
