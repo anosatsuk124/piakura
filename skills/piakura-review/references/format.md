@@ -80,7 +80,7 @@ JSON keys are snake_case. Times are seconds of the source recording; `channel` i
 - `reply_to` (replies only): the item of an earlier submission whose thread the reviewer answers, keyed like `replies` (`0001/c3`, `0001/summary`, `0001/edit:easy`). `start`, `end`, `layers` and `parts` repeat that item's.
 - `parts` (range and preference comments, optional): the reviewer had hidden some parts of these layers, so for each layer listed the comment concerns only the parts named (a part is the layer's notes on one `track`/`channel`; `label` is its TrackName, e.g. "Right hand", or `CH n` for MIDI layers). Layers in `layers` but not in `parts` were shown whole.
 - Every comment and edit carries the `revision` it was made on.
-- `draft_midi` / `draft_mml` sit beside the JSON: the reviewer's complete draft for that layer, on the layer's own tick clock, with its tempo map and program/CC events. `draft_readable` is the same draft written like the layer's readable view (quantized; `draft_midi` keeps the exact notes). `mml_text` appears when the reviewer edited the MML text directly.
+- `draft_midi` / `draft_mml` sit beside the JSON: the reviewer's complete draft for that layer, on the layer's own tick clock, with its tempo map and program/CC events. `draft_readable` is the same draft written like the layer's readable view (quantized; `draft_midi` keeps the exact notes). `mml_text` appears when the reviewer edited the MML text directly, or edited on the score view: then it is the layer's readable MML with the edited bars rewritten one bar per line (comments and other lines kept). With empty `ops` it is a text-only edit, such as the score view's Tidy, which rewrites the whole text with every sound kept.
 
 NoteRef cites a published note:
 

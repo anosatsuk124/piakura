@@ -16,7 +16,7 @@ piakura は、曲を弾けるピアノ編曲にするためのツールです。
 - **MIDI からピアノ編曲。** 主旋律・ベース・和声・特徴的な伴奏を含む曲全体を、両手の3つの難易度に編曲します。88鍵のほか25鍵などの小さな鍵盤にも対応します。音域は固定にも、休符でオクターブを切り替える形にもでき、原調のままにも移調にもできます。
 - **音源なら先に採譜。** 混合音源を公開モデルで採譜し、その録音自体の根拠（拍、音高、繰り返される句、和声）で結果を直します。確かめられない箇所は、不確かなまま印を付けて残します。
 - **検査済みの楽譜。** 難易度ごとに、手の幅、片手の同時音数、速い跳躍、左右の交差と、選んだ主旋律が保たれているかを検査します。検査に通らなければ、そのまま報告します。完了扱いにはしません。
-- **ブラウザでのレビュー（任意）。** ピアノロールと楽譜のテキスト、録音とのA/B再生、範囲や音符へのコメント、FLAC/MP4 の書き出しができます。Tailscale を使っていれば、tailnet 経由でタブレットからも開けます。
+- **ブラウザでのレビュー（任意）。** ピアノロールと五線譜（調号、コードネームかディグリー、再生への追従、MuseScore に近いキー操作での編集）と楽譜のテキスト、録音とのA/B再生、範囲や音符へのコメント、FLAC/MP4 の書き出し（落ちてくる音符、楽譜、または楽譜とその下の落ちてくる音符）ができます。楽譜は MuseScore 向けの MusicXML や LilyPond でダウンロードできます。Tailscale を使っていれば、tailnet 経由でタブレットからも開けます。
 - **納品フォルダ。** 難易度と鍵盤の版ごとの MIDI と MML、検査レポート、チェックサムをまとめます。
 
 ## 必要なもの
@@ -154,7 +154,7 @@ piakura は次のものの上に作られています。
 - すべての楽譜をコンパイルする、kujirahand さんの [SakuraMML](https://sakuramml.com/) と [sakuramml-rust](https://github.com/kujirahand/sakuramml-rust)（MIT）
 - MIDI から MML への変換の着想を得た SMF2MML（コードは使っていません）
 - 再生に使う [MuseScore_General](https://ftp.osuosl.org/pub/musescore/soundfont/MuseScore_General/) SoundFont（MIT）
-- [gomidi](https://gitlab.com/gomidi/midi)、Go フォントと golang.org/x のライブラリ。レビュー画面の React、Base UI、shadcn/ui、CodeMirror、spessasynth、Fontsource のフォント
+- [gomidi](https://gitlab.com/gomidi/midi)、Go フォントと golang.org/x のライブラリ。レビュー画面の React、Base UI、shadcn/ui、CodeMirror、spessasynth、[VexFlow](https://www.vexflow.com/)（MIT）と Bravura・Academico のフォント（SIL OFL 1.1）、Fontsource のフォント
 - 下の表のモデルの作者、[yt-dlp](https://github.com/yt-dlp/yt-dlp)、[FFmpeg](https://ffmpeg.org/)、[FluidSynth](https://www.fluidsynth.org/)
 
 告知の全文は、ツールと一緒に `THIRD_PARTY_NOTICES.md` として配布します。

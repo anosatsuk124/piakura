@@ -16,7 +16,7 @@ piakura turns a song into piano arrangements you can play. It is a set of skills
 - **MIDI to piano.** Arranges the whole ensemble (melody, bass, harmony, characteristic accompaniment) for two hands at three levels. Supports 88 keys and smaller keyboards such as 25 keys, with a fixed range or octave switches at rests, in the original key or transposed.
 - **Audio to MIDI first.** Transcribes a mixed recording with open models, then corrects the result against the recording's own evidence (beats, pitch, repeated phrases, harmony) and marks what stays uncertain.
 - **Checked scores.** Every level is validated for hand spans, notes per hand, fast leaps and crossed hands, and for keeping the melody you chose. A failure is reported, never relabelled as done.
-- **Review in a browser (optional).** A piano roll with the score text, A/B playback against the recording, comments on ranges and notes, and FLAC/MP4 export. Open it on a tablet through your tailnet if you use Tailscale.
+- **Review in a browser (optional).** A piano roll and staff notation (key signatures, chord names or degrees, following playback, editable with MuseScore-like keys) with the score text, A/B playback against the recording, comments on ranges and notes, and FLAC/MP4 export (falling notes, the score, or the score above the notes). Download a score as MusicXML for MuseScore or as LilyPond. Open it on a tablet through your tailnet if you use Tailscale.
 - **A delivery folder.** MIDI and MML for each level and keyboard version, validation reports and checksums.
 
 ## Requirements
@@ -148,7 +148,7 @@ piakura builds on:
 - [SakuraMML](https://sakuramml.com/) and [sakuramml-rust](https://github.com/kujirahand/sakuramml-rust) by kujirahand (MIT), which compiles every score;
 - the idea of SMF2MML, which inspired the MIDI-to-MML conversion (no code was used);
 - [MuseScore_General](https://ftp.osuosl.org/pub/musescore/soundfont/MuseScore_General/) SoundFont (MIT) for playback;
-- [gomidi](https://gitlab.com/gomidi/midi), the Go fonts and golang.org/x libraries; React, Base UI, shadcn/ui, CodeMirror, spessasynth and Fontsource fonts in the review page;
+- [gomidi](https://gitlab.com/gomidi/midi), the Go fonts and golang.org/x libraries; React, Base UI, shadcn/ui, CodeMirror, spessasynth, [VexFlow](https://www.vexflow.com/) (MIT) with the Bravura and Academico fonts (SIL OFL 1.1) and Fontsource fonts in the review page;
 - the authors of the models listed below, [yt-dlp](https://github.com/yt-dlp/yt-dlp), [FFmpeg](https://ffmpeg.org/) and [FluidSynth](https://www.fluidsynth.org/).
 
 The full notices ship with the tools as `THIRD_PARTY_NOTICES.md`.
