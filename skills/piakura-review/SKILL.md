@@ -22,7 +22,7 @@ Write `spec.json`. Paths are relative to the review directory. Layer IDs stay st
   - each arrangement level (`arrangement`);
   - F0 contours (`pitch.json`) when the evidence has them.
 - `grid`: the measured beat clock (a beats file, or `bpm`/`origin_seconds`/`beats_per_bar`), with a `note` stating how it was estimated. Score `Tempo()` in this project is a seconds clock, not the meter. `origin_seconds` is the downbeat of bar 1: the roll's bar lines and every layer's readable view count bars from it, so fix it with [clock evidence](../piakura-readable-mml/references/clock-evidence.md).
-- `readable`: publish adds a generated [readable](../piakura-readable-mml/SKILL.md) view to every notes layer; choose its `section_set`, its `language` (the job's), and `"chords": "both"` so its bar comments carry names and degrees; the page's toolbar and the export video show the sounding chord, its degree and the key in force (`// @key` lines) from them. Mark layers whose MML already is readable with `"readable": {"disabled": true}`, and add a readable score the reviewer should hear as its own `mml` layer with the `offset_seconds` from its report.
+- `readable`: publish adds a generated [readable](../piakura-readable-mml/SKILL.md) view to every notes layer; choose its `section_set`, its `language` (the job's), and `"chords": "both"` so its chord comments carry Harte values and degrees; the page's toolbar and the export video show the sounding chord, its degree and the key in force (`/** @key */` comments) from them. Mark layers whose MML already is readable with `"readable": {"disabled": true}`, and add a readable score the reviewer should hear as its own `mml` layer with the `offset_seconds` from its report.
 - `section_sets`: your section split; each section's `note` says what happens musically and `cautions` says what the reviewer should check there.
 - `annotations`: every unresolved or uncertain passage and every validator warning or voicing issue that has a time, with `severity` and the MML comment IDs it concerns in `tags`.
 - `summary`: the state of the work in one paragraph, including what is provisional.
@@ -78,3 +78,13 @@ bash ../piakura-arranger/scripts/tool.sh piakura-review publish "$WORK/review/sp
 ```
 
 Publishing moves `replies` into the revision and marks the pending feedback answered (`--responds-to 0003,0004` narrows that). It refuses while a pending submission has a comment, summary or edit but no reply; `missing_replies` in its output lists what `--responds-to` answered without one. To show work in progress while feedback waits, publish with `--responds-to none`: the feedback stays pending. The reviewer's screen shows Sync, which diffs each changed layer against the previous revision. Return to step 3 until the reviewer ends the review, then stop the server.
+
+## 6. Open a session in keyroam (when asked)
+
+keyroam, a browser workstation, opens a published layer as a project package:
+
+```bash
+bash ../piakura-arranger/scripts/tool.sh piakura-review package "$WORK/review/review.json" --layer <id> [--revision rN] -o "$DELIVERY/<slug>-<id>.keyroam.zip"
+```
+
+The default layer is the first arrangement, else the transcription; the default revision the latest. An MML layer becomes source text keyroam compiles and reads the comments of; a MIDI layer becomes its notes, with its readable view's keys and chords. Sections, their notes and cautions, and the revision's annotations come along as suggestions; the recording stays outside (its hash is kept). Report the `diagnostics` of the JSON it prints to the user. Scores from an older piakura go through [piakura-upgrade](../piakura-upgrade/SKILL.md) first.

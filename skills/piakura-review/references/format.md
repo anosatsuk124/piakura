@@ -88,7 +88,7 @@ NoteRef cites a published note:
 { "track": 1, "on_order": 6, "channel": 1, "pitch": 81, "name": "o6a", "velocity": 43,
   "start_tick": 2688, "end_tick": 4560, "start": 1.12, "end": 1.9,
   "line": 13, "line_text": "Time(2688) o6 v43 q100 a%1872",
-  "readable_line": 41, "readable_line_text": "o6 l8 a2^8 r8 g f+ // 1: GM7(IVM7)" }
+  "readable_line": 41, "readable_line_text": "/** @chord G:maj7 roman=IVM7 */ o6 l8 a2^8 r8 g f+ // 1" }
 ```
 
 `track`/`on_order` is the same pair as `NoteRef` in arrangement plans and voicing reviews (compiled SMF track and NoteOn event index). `line` is the 1-based MML line that produced the note, `null` when unmapped; `line_text` is that line, so the note stays findable after you renumber; a note the reviewer added in the draft has `line: null` and `line_text: "(note added in draft)"`, whatever the page's language. `readable_line` / `readable_line_text` give the bar line of the layer's readable view when it has one; edit the MML that `line` cites.

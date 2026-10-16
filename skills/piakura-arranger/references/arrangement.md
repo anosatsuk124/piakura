@@ -71,9 +71,9 @@ restore it explicitly in the score with a comment. A converter must still
 preserve its input; only `--mode readable` quantizes.
 
 Make the readable MML the authoritative editable score: bar lines, phrase and
-chord comments (`Name(Degree)`, see
+chord comments (`/** @chord <Harte> roman=<Degree> */`, see
 [piakura-readable-mml](../../piakura-readable-mml/SKILL.md#chord-comments)), the source's
-`// @key` headings above the same bars, note values, rests
+`/** @key */` and `/** @section */` comments at the same places, note values, rests
 and chords throughout, with exact ticks only for restored exceptions. JSON
 is analysis/provenance, not a replacement score that silently overwrites later
 MML edits. Render the accompaniment alone and in context when checking bass

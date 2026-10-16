@@ -40,7 +40,7 @@ npx skills add anosatsuk124/piakura -a claude-code    # Claude Code（.claude/sk
 npx skills add anosatsuk124/piakura -a opencode       # OpenCode
 ```
 
-5つのスキルはまとめて入れてください。入口の `piakura` と、`piakura-transcription`・`piakura-readable-mml`・`piakura-arranger`・`piakura-review` は互いを参照しています。コマンドラインのツールは初回に `~/.local/share/piakura` へ取得され、リリースの SHA-256 で検証されます。初回には、`piakura` コマンドを `~/.local/bin` にも置くか（リンクを1つ作ります）を尋ねます。置くと、レビューのページを自分で起動できます。シェルの設定ファイルは変更しません。skills CLI は匿名の利用データを送ります。止めるには `DISABLE_TELEMETRY=1` を設定します。
+6つのスキルはまとめて入れてください。入口の `piakura` と、`piakura-transcription`・`piakura-readable-mml`・`piakura-arranger`・`piakura-review`・`piakura-upgrade`（前の版の piakura で作ったものを今の形に直し、レビューを keyroam 用のパッケージに書き出します）は互いを参照しています。コマンドラインのツールは初回に `~/.local/share/piakura` へ取得され、リリースの SHA-256 で検証されます。初回には、`piakura` コマンドを `~/.local/bin` にも置くか（リンクを1つ作ります）を尋ねます。置くと、レビューのページを自分で起動できます。シェルの設定ファイルは変更しません。skills CLI は匿名の利用データを送ります。止めるには `DISABLE_TELEMETRY=1` を設定します。
 
 ## 使い方
 

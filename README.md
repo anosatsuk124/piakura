@@ -40,7 +40,7 @@ npx skills add anosatsuk124/piakura -a claude-code    # Claude Code (.claude/ski
 npx skills add anosatsuk124/piakura -a opencode       # OpenCode
 ```
 
-Install all five skills together: `piakura` (the entry point), `piakura-transcription`, `piakura-readable-mml`, `piakura-arranger` and `piakura-review` use each other. The command-line tools are downloaded on first use into `~/.local/share/piakura`, checked against the release's SHA-256 sums. The first run asks whether to also put the `piakura` command in `~/.local/bin` (one link), so you can start the review page yourself; your shell profile is never changed. The skills CLI sends anonymous usage data; set `DISABLE_TELEMETRY=1` to turn that off.
+Install all six skills together: `piakura` (the entry point), `piakura-transcription`, `piakura-readable-mml`, `piakura-arranger`, `piakura-review` and `piakura-upgrade` (which brings work from an older piakura up to date and writes a review as a package for keyroam) use each other. The command-line tools are downloaded on first use into `~/.local/share/piakura`, checked against the release's SHA-256 sums. The first run asks whether to also put the `piakura` command in `~/.local/bin` (one link), so you can start the review page yourself; your shell profile is never changed. The skills CLI sends anonymous usage data; set `DISABLE_TELEMETRY=1` to turn that off.
 
 ## Use
 
