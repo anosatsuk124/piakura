@@ -1,6 +1,6 @@
 ---
 name: piakura-upgrade
-description: Upgrade work made by an older piakura so it reads as the current one writes it, and hand it to keyroam. Use when readable MML still has `// @key`, `// @section` or bar-comment chords (`// 12: Bm7(VIm7)`), when mml2score warns `chord-syntax`, or when a published review session should open in keyroam as a `.keyroam.zip` package.
+description: "Upgrade work made by an older piakura so it reads as the current one writes it, and hand it to keyroam. Use when readable MML still has `// @key`, `// @section` or bar-comment chords (`// 12: Bm7(VIm7)`), when mml2score warns `chord-syntax`, or when a published review session should open in keyroam as a `.keyroam.zip` package."
 ---
 
 # Piakura upgrade
